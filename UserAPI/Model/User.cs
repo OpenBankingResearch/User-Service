@@ -27,5 +27,9 @@ namespace UserAPI.Model
 
         public string emailAddress { get; set; }
 
+        public string Title { get; set; }
+        public string Gender { get; set; }
+        public string Password { get; set; }
+
     }
 }
