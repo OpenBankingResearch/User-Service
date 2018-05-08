@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UserAPI.Model;
-using UserAPI.MongoRepository;
+using UserAPI.MongoRepository; 
 
 namespace UserAPI
 {
