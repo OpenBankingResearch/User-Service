@@ -1,4 +1,4 @@
-﻿namespace UserAPI.Model
+﻿namespace CustomerAPI.Model
 {
     public class Settings
     {

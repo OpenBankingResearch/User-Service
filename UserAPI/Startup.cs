@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using UserAPI.Model;
-using UserAPI.MongoRepository;
+using CustomerAPI.Model;
+using CustomerAPI.MongoRepository;
 
-namespace UserAPI
+namespace CustomerAPI
 {
     public class Startup
     {
@@ -27,7 +27,7 @@ namespace UserAPI
                 options.Database
                     = Configuration.GetSection("MongoConnection:Database").Value;
             });
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

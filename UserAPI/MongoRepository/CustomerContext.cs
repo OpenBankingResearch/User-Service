@@ -1,19 +1,19 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using UserAPI.Model;
+using CustomerAPI.Model;
 
-namespace UserAPI.MongoRepository
+namespace CustomerAPI.MongoRepository
 {
-    public class UserContext
+    public class CustomerContext
     {
         private readonly IMongoDatabase mongoDatabases;
 
-        public UserContext(IOptions<Settings> settings)
+        public CustomerContext(IOptions<Settings> settings)
         {
             var client = new MongoClient(settings.Value.ConnectionString);
             mongoDatabases = client.GetDatabase(settings.Value.Database);
         }
 
-        public IMongoCollection<User> User { get { return mongoDatabases.GetCollection<User>("user"); } }
+        public IMongoCollection<Customer> Customer { get { return mongoDatabases.GetCollection<Customer>("customer"); } }
     }
 }
