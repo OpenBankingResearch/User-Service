@@ -4,10 +4,13 @@ using System;
 
 namespace CustomerAPI.Model
 {
+    [Serializable]
+    [BsonIgnoreExtraElements]
     public class Customer
     {
-        [BsonId]
-        public ObjectId _id { get; set; }
+        //[BsonId]
+        //[BsonIgnore]
+      //  public ObjectId _id { get; set; }
 
         public string customerId { get; set; }
 

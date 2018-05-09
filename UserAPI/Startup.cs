@@ -27,6 +27,13 @@ namespace CustomerAPI
                 options.Database
                     = Configuration.GetSection("MongoConnection:Database").Value;
             });
+
+            services.AddDistributedRedisCache(option =>
+            {
+                option.Configuration = Configuration.GetSection("RedisConnection:IP").Value;
+            });
+
+
             services.AddTransient<ICustomerRepository, CustomerRepository>();
         }
 
