@@ -1,76 +1,69 @@
 ﻿using System;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 using CustomerAPI.Model;
 using CustomerAPI.MongoRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
 using Polly;
+using UserAPI.Cache;
+using UserAPI.Audit;
 
 namespace CustomerAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class CustomerController : Controller
     {
-        private readonly ICustomerRepository CustomerRepository;
+        private readonly ICustomerRepository customerRepository;
 
-        private readonly IDistributedCache DistributedCache;
+        private readonly ICacheRepository cacheRepository;
 
-        static Policy policy = Policy.Handle<Exception>().CircuitBreakerAsync(2, TimeSpan.FromSeconds(40), onBreak: (ex ,time) => AuditHandler.LogAudit("AuditOnBreak", "Data Source not found"), onReset: () => AuditHandler.LogAudit("AuditOnReset", "Circuit Closed"));
+        private readonly IAuditHandler auditHandler;
 
-        public CustomerController(ICustomerRepository CustomerRepository, IDistributedCache DistributedCache)
+        static Policy policy = Policy.Handle<Exception>().CircuitBreakerAsync(2, TimeSpan.FromSeconds(40));
+
+        public CustomerController(ICustomerRepository customerRepository, ICacheRepository cacheRepository, IAuditHandler auditHandler)
         {
-            this.CustomerRepository = CustomerRepository;
-            this.DistributedCache = DistributedCache;
-            
+            this.customerRepository = customerRepository;
+            this.cacheRepository = cacheRepository;
+            this.auditHandler = auditHandler;
         }
         
         [HttpGet]
         public async Task<IEnumerable<Customer>> GetAll()
         {
-            return await policy.ExecuteAsync(() => CustomerRepository.GetAllCustomers()); ;
+            return await policy.ExecuteAsync(() => customerRepository.GetAllCustomers()); ;
         }
 
         [HttpGet]
         public async Task<Customer> Get(string id)
         {
-            var cacheKey = id;
-            var cachedValue = await DistributedCache.GetAsync(cacheKey);
-            if (cachedValue != null)
+            var cacheCustomer = await cacheRepository.GetAsync(id);
+            if (cacheCustomer == null)
             {
-                return ByteArrayToObject(cachedValue) as Customer; 
+                var customer = await customerRepository.GetCustomer(id);
+                await policy.ExecuteAsync(() => cacheRepository.SetAsync(id, customer));
+                GenerateAuditEvent(id, 1, "Return customer from database");
+                return customer;
             }
-            else
-            {
-                var val  = await CustomerRepository.GetCustomer(id);
-                await DistributedCache.SetAsync(cacheKey, ObjectToByteArray(val));
-                return val;
-            }
+            GenerateAuditEvent(id, 2, "Return customer from cache");
+            return cacheRepository as Customer;
         }
 
-        private static byte[] ObjectToByteArray(Object obj)
+        private void GenerateAuditEvent(string id, int descriptionId, string description)
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            using (var ms = new MemoryStream())
+            var audit = new Audit
             {
-                bf.Serialize(ms, obj);
-                return ms.ToArray();
-            }
+                Category = "Database Call",
+                Description = description,
+                FullyQualifiedClassName = "CustomerController",
+                DescriptionId = descriptionId,
+                Id = descriptionId,
+                MethodName = "Get",
+                Severity = "Information",
+                TimeStamp = DateTime.Now,
+                User = id
+            };
+            auditHandler.Post(audit);
         }
-
-        private static Object ByteArrayToObject(byte[] arrBytes)
-        {
-            using (var memStream = new MemoryStream())
-            {
-                var binForm = new BinaryFormatter();
-                memStream.Write(arrBytes, 0, arrBytes.Length);
-                memStream.Seek(0, SeekOrigin.Begin);
-                var obj = binForm.Deserialize(memStream);
-                return obj;
-            }
-        }
-
     }
 }

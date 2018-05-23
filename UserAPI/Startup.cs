@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using CustomerAPI.Model;
 using CustomerAPI.MongoRepository;
+using UserAPI.Cache;
 
 namespace CustomerAPI
 {
@@ -32,9 +33,8 @@ namespace CustomerAPI
             {
                 option.Configuration = Configuration.GetSection("RedisConnection:IP").Value;
             });
-
-
             services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<ICacheRepository, CacheRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

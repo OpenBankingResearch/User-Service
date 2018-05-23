@@ -1,17 +1,22 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 
-namespace CustomerAPI
+namespace UserAPI.Audit
 {
-    public static class AuditHandler
+    public class AuditHandler : IAuditHandler
     {
-        public static void LogAudit(string auditId, string auditText)
+        public async void Post(Audit audit)
         {
-            throw new Exception();
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+            var json = JsonConvert.SerializeObject(audit);
+            var buffer = Encoding.UTF8.GetBytes(json);
+            var byteContent = new ByteArrayContent(buffer);
+            await client.PostAsync("http://52.50.41.159:8088/audit", byteContent);
         }
-
-       
-
     }
 }
