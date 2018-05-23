@@ -53,7 +53,7 @@ namespace CustomerAPI.Controllers
         {
             var audit = new Audit
             {
-                Category = "Database Call",
+                Category = "System call audit",
                 Description = description,
                 FullyQualifiedClassName = "CustomerController",
                 DescriptionId = descriptionId,
