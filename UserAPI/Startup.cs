@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using CustomerAPI.Model;
 using CustomerAPI.MongoRepository;
 using UserAPI.Cache;
+using UserAPI.Audit;
 
 namespace CustomerAPI
 {
@@ -35,6 +36,7 @@ namespace CustomerAPI
             });
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<ICacheRepository, CacheRepository>();
+            services.AddTransient<IAuditHandler, AuditHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
