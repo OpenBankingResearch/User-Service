@@ -30,10 +30,7 @@ namespace CustomerAPI.MongoRepository
 
         public async Task<Customer> GetCustomer(string id)
         {
-            ObjectId internalId;
-            if (!ObjectId.TryParse(id, out internalId))
-                internalId = ObjectId.Empty;
-            var filter = Builders<Customer>.Filter.Eq(s => s._id, internalId);
+            var filter = Builders<Customer>.Filter.Eq(s => s.customerId, id);
             var result = await CustomerContext.Customer.FindAsync<Customer>(filter);
             return await result.FirstOrDefaultAsync(); ;
         }
