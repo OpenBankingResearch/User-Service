@@ -4,15 +4,15 @@ namespace UserAPI.Audit
 {
     public class Audit
     {
-        public string Severity { get; set; }
-        public string User { get; set; }
-        public int Id { get; set; }
-        public DateTime TimeStamp { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public int DescriptionId { get; set; }
-        public string FullyQualifiedClassName { get; set; }
-        public string MethodName { get; set; }
-        public object Data { get; set; }
+        public string severity { get; set; }
+        public string user { get; set; }
+        public string id { get; set; }
+        public string timeStamp { get; set; }
+        public string category { get; set; }
+        public string description { get; set; }
+        public string descriptionId { get; set; }
+        public string fullyQualifiedClassName { get; set; }
+        public string methodName { get; set; }
+        public object data { get; set; }
     }
 }

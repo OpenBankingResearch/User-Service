@@ -53,15 +53,15 @@ namespace CustomerAPI.Controllers
         {
             var audit = new Audit
             {
-                Category = "System call audit",
-                Description = description,
-                FullyQualifiedClassName = "CustomerController",
-                DescriptionId = descriptionId,
-                Id = descriptionId,
-                MethodName = "Get",
-                Severity = "Information",
-                TimeStamp = DateTime.Now,
-                User = id
+                category = "System call audit",
+                description = description,
+                fullyQualifiedClassName = "CustomerController",
+                descriptionId = descriptionId.ToString(),
+                id = id,
+                methodName = "Get",
+                severity = "Information",
+                timeStamp = DateTime.Now.ToString(),
+                user = id
             };
             auditHandler.Post(audit);
         }
