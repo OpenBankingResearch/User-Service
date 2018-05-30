@@ -17,7 +17,8 @@ namespace UserAPI.Cache
 
         public async Task<object> GetAsync(string key)
         {
-            var cachedValue = await distributedCache.GetAsync(key);
+            string formattedKey = string.Format("{0}_user", key);
+            var cachedValue = await distributedCache.GetAsync(formattedKey);
             if (cachedValue != null)
             {
                 var value = ByteArrayToObject(cachedValue);
@@ -28,7 +29,8 @@ namespace UserAPI.Cache
 
         public async Task SetAsync(string key, object value)
         {
-            await distributedCache.SetAsync(key, ObjectToByteArray(value));
+            string formattedKey = string.Format("{0}_user", key);
+            await distributedCache.SetAsync(formattedKey, ObjectToByteArray(value));
         }
 
         private static byte[] ObjectToByteArray(Object obj)
