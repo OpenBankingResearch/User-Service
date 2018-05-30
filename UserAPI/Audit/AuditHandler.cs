@@ -16,7 +16,7 @@ namespace UserAPI.Audit
             var json = JsonConvert.SerializeObject(audit);
             var buffer = Encoding.UTF8.GetBytes(json);
             var byteContent = new ByteArrayContent(buffer);
-            await client.PostAsync("http://52.50.41.159:8088/audit", byteContent);
+            var result = await client.PostAsync("http://52.50.41.159:8088/audit", byteContent);
         }
     }
 }

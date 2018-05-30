@@ -61,7 +61,8 @@ namespace CustomerAPI.Controllers
                 methodName = "Get",
                 severity = "Information",
                 timeStamp = DateTime.Now.ToString(),
-                user = id
+                user = id,
+                data = new object()
             };
             auditHandler.Post(audit);
         }
