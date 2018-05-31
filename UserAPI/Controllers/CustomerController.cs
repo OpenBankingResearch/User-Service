@@ -46,7 +46,7 @@ namespace CustomerAPI.Controllers
                 return customer;
             }
             GenerateAuditEvent(id, 2, "Return customer from cache");
-            return cacheRepository as Customer;
+            return cacheCustomer as Customer;
         }
 
         private void GenerateAuditEvent(string id, int descriptionId, string description)
